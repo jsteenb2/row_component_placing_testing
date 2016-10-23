@@ -8,7 +8,8 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
     link: function(scope, element, attrs){
       scope.hovered = false;
       scope.doubleClicked = false;
-      var template = angular.element(scope.component.content);
+      var template = angular.element(scope.component.content)
+        .attr('tabindex', scope.component.id);
       var linkFn = $compile(template);
       var content = linkFn(scope);
       element.append(content);
@@ -16,8 +17,6 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
       scope.onClick = function($event){
         $event.stopPropagation();
         scope.hovered = !scope.hovered;
-        element.find('[data-head="head"]')
-          .addClass('hovered');
         $rootScope.$emit('selected.component', scope.component.id);
       };
 
@@ -38,23 +37,32 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
         }
       });
 
+      scope.moveComponent = function(ev){
+        if (scope.hovered){
+          ev.preventDefault();
+          arrowListener(ev);
+        }
+      };
 
-    //   scope.arrowListener = function(){
-    //      console.log('in press event');
-    //      if (window.event.keyCode == 37){
-    //        // left arrow
-    //        console.log("left arrow");
-    //      } else if (window.event.keyCode == 39){
-    //        // right arrow
-    //        console.log("right arrow");
-    //      } else if (window.event.keyCode == 40){
-    //        // down arrow
-    //        console.log("down arrow");
-    //      } else if (window.event.keyCode == 38){
-    //        // up arrow
-    //        console.log("up arrow");
-    //      }
-    //  }
+      var arrowListener = function(ev){
+         if (ev.which == 37){
+           // left arrow
+           scope.component.moveLeft();
+           console.log("left arrow");
+         } else if (ev.which == 39){
+           // right arrow
+           scope.component.moveRight();
+           console.log("right arrow");
+         } else if (ev.which == 40){
+           // down arrow
+           scope.component.moveDown();
+           console.log(scope.component.id);
+         } else if (ev.which == 38){
+           // up arrow
+           scope.component.moveUp();
+           console.log("up arrow");
+         }
+      };
     }
   };
 }]);
