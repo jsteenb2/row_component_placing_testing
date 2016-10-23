@@ -2,6 +2,7 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
   var rowService = {};
   var _rows = [];
   var _id = 1;
+  var _compId = 1;
 
   rowService.getRows = function(){
     return _rows;
@@ -17,11 +18,13 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
 
   rowService.buildNewComponent = function(componentType, rowId){
     var component = _activateComponent(componentType);
+    component.id = _compId;
     if (rowId) {
       _addComponentToExistingRow(component, rowId);
     } else {
       _makeNewRow(component);
     }
+    _compId++;
   };
 
   var _addComponentToExistingRow = function(component, rowId){
