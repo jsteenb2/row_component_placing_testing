@@ -15,6 +15,7 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
       element.append(content);
 
       scope.onClick = function($event){
+        console.log(scope.component);
         $event.stopPropagation();
         scope.hovered = !scope.hovered;
         $rootScope.$emit('selected.component', scope.component.id);
@@ -27,7 +28,7 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
           $ele.removeClass('hovered');
         } else {
           $ele.addClass('hovered');
-        }
+        }// make a toggleClass('hovered')
         scope.doubleClicked = !scope.doubleClicked;
       };
 
@@ -56,12 +57,12 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
          } else if (ev.which == 40){
            // down arrow
            scope.component.moveDown();
-           console.log(scope.component.id);
          } else if (ev.which == 38){
            // up arrow
            scope.component.moveUp();
            console.log("up arrow");
          }
+         $rootScope.$emit('component.moved');
       };
     }
   };

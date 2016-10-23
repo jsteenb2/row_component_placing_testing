@@ -19,4 +19,8 @@ app.controller('sideBarCtrl', ["$scope", "rowService", "$rootScope", function($s
       $scope.selectedRow = id;
     }
   });
+
+  $rootScope.$on('component.moved', function(ev){
+    $scope.rows();
+  });
 }]);
