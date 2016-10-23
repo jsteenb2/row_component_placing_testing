@@ -48,13 +48,9 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
   };
 
   var _findRowIdx = function(rowId){
-    // return _rows.map(function(row) {
-    //   return row.id;
-    // }).indexOf(rowId);
     var rowIdx = _.findIndex(_rows, function(row){
       return row.id == rowId;
     });
-    console.log(rowIdx);
     return rowIdx;
 
   };
@@ -69,17 +65,23 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
 
   var _moveUp = function(){
     var rowIdx = _findRowIdx(this.rowId);
-    console.log(rowIdx);
     var compIdx = _findComponentIdx(this, rowIdx);
+    var comp;
     if(rowIdx > 0){
-      var comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
+      comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
       _addToRow(comp, rowIdx - 1);
       _checkEmptyRow(rowIdx);
+    } else if( rowIdx === 0 &&
+                _rows[rowIdx].components.length > 1 ){
+      comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
+      _addNewTopRow(comp);
     }
   };
 
   var _checkEmptyRow = function(rowIdx){
-    if(_rows[rowIdx].length < 1){
+    console.log(_rows[rowIdx]);
+    if(_rows[rowIdx].components.length < 1){
+      console.log('deleted');
       _rows.splice(rowIdx, 1);
     }
   };
@@ -87,8 +89,8 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
   var _moveDown = function(){
     var rowIdx = _findRowIdx(this.rowId);
     var compIdx = _findComponentIdx(this, rowIdx);
-    if(rowIdx < _rows.length - 1){
-         var comp = _rows[rowIdx].components.splice(compIdx, 1);
+    if(rowIdx < _rows.length - 1 ){
+         var comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
          _addRowBelow(comp, rowIdx);
     }
   };
@@ -144,9 +146,20 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
       id: _id,
       components: []
     };
-    component.rowId = _id;
+    component.rowId = newRow.id;
     newRow.components.push(component);
     _rows.push(newRow);
+    _id++;
+  };
+
+  var _addNewTopRow = function(component){
+    var newRow = {
+      id: _id,
+      components: []
+    };
+    component.rowId = newRow.id;
+    newRow.components.push(component);
+    _rows.unshift(newRow);
     _id++;
   };
 
