@@ -7,6 +7,7 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
     },
     link: function(scope, element, attrs){
       scope.hovered = false;
+      scope.doubleClicked = false;
       var template = angular.element(scope.component.content);
       var linkFn = $compile(template);
       var content = linkFn(scope);
@@ -23,7 +24,12 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
       scope.dblClick = function($event){
         $event.stopPropagation();
         var $ele = angular.element($event.target);
-        $ele.addClass('hovered');
+        if(scope.doubleClicked){
+          $ele.removeClass('hovered');
+        } else {
+          $ele.addClass('hovered');
+        }
+        scope.doubleClicked = !scope.doubleClicked;
       };
 
       $rootScope.$on('selected.component', function(ev, id){
