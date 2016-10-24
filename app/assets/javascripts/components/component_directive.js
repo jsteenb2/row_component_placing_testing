@@ -15,7 +15,6 @@ app.directive('component', ['$compile', "$rootScope", "$window", function($compi
       element.append(content);
 
       scope.onClick = function($event){
-        console.log(scope.component);
         $event.stopPropagation();
         scope.hovered = !scope.hovered;
         $rootScope.$emit('selected.component', scope.component.id);

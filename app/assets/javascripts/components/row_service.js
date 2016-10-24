@@ -89,29 +89,32 @@ app.factory('rowService', ["_", "Restangular", "componentService", function(_, R
   var _moveDown = function(){
     var rowIdx = _findRowIdx(this.rowId);
     var compIdx = _findComponentIdx(this, rowIdx);
-    if(rowIdx < _rows.length - 1 ){
-         var comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
-         _addRowBelow(comp, rowIdx);
+    var comp;
+    if(rowIdx < _rows.length - 1){
+      comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
+      _addRowBelow(comp, rowIdx + 1);
+      _checkEmptyRow(rowIdx);
+    } else if (_rows[rowIdx].components.length > 1 ){
+      comp = _rows[rowIdx].components.splice(compIdx, 1)[0];
+      _makeNewRow(comp);
     }
   };
 
-  var _addRowBelow = function(component, rowIdx){
-    if(_rows[rowIdx].length){
-      var nextRowIdx = rowIdx + 1;
-      _addToRow(comp, nextRowIdx);
+  var _addRowBelow = function(component, nextRowIdx){
+    if(_rows[nextRowIdx].components.length){
+      _addToRow(component, nextRowIdx);
     } else {
-      _rows.splice(rowIdx, 1);
-      _addToRow(component, rowIdx);
+      _makeNewRow(component);
     }
   };
 
-  var _addToRow = function(component, newRowIdx){
-    var currentRow = _rows[newRowIdx];
-    console.log(currentRow);
+  var _addToRow = function(component, rowIdx){
+    var currentRow = _rows[rowIdx];
     if (currentRow){
       component.rowId = currentRow.id;
       currentRow.components.push(component);
     } else {
+      console.log("in the not currentRow");
       _makeNewRow(component);
     }
   };
